@@ -1,90 +1,108 @@
 package br.ufla.dcc.ES;
 
+import static org.testng.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
 public class StringCalc {
-	
-	public ArrayList<Integer> convertNumbers(String number){
+
+	public static ArrayList<Integer> convertNumbers(String number) {
 		ArrayList<Integer> numbers = new ArrayList<>();
-		
-		String numb = number.replaceAll(" ", "");
-		numb = numb.replaceAll("\n", "");
 
-		String a[] = numb.split(",");
+		String numberS = number.replaceAll(" ", "");
+		String numsConvert[] = numberS.split(",");
 
-		for (String num : a) {
-			numbers.add(Integer.parseInt(num));
+		for (String num : numsConvert) {
+			numbers.add((int)Integer.parseInt(num));
 		}
 
 		return numbers;
 	}
-	
-	public void checkNegatives(ArrayList<Integer> number) {
-		ArrayList<Integer> numbersNeg = new ArrayList<>();
-		
+
+	public static boolean checkNegatives(ArrayList<Integer> number) {
 		for (Integer integer : number) {
 			if (integer < 0) {
-				numbersNeg.add(integer);
+				return true;
 			}
 		}
-		
-		if (!numbersNeg.isEmpty()) {
-			System.out.print("Negatives Not Allowed: ");
-			
-			for (Integer integer : numbersNeg) {
+
+		return false;
+	}
+
+	public static void getNegatives(ArrayList<Integer> number) {
+		System.out.print("Negatives Not Allowed: ");
+
+		for (Integer integer : number) {
+			if (integer < 0) {
 				System.out.print(integer + " ");
 			}
 		}
 	}
 
 	public static int add(ArrayList<Integer> number) {
-
 		int sum = 0;
-		
+
 		for (Integer integer : number) {
-			sum =+ integer;
-		}		
-		
+			sum += integer;
+		}
+
 		return sum;
 	}
 
-	// Test Sum Ok
-	public void testSumNumber() {
-		
+	@Test // Test Sum Ok
+	public static void testSumNumber() {
+		ArrayList<Integer> numbers = new ArrayList<>();
+
+		numbers.add(1);
+		numbers.add(2);
+
+		boolean equals = (add(numbers) == 3) ? true : false;
+
+		assertEquals(true, equals);
 	}
 
-	// Test Sum Number Negatives
-	public void testSumNegatives() {
-		
+	@Test // Test Sum Number Negatives
+	public static void testSumNegatives() {
+		ArrayList<Integer> numbers = new ArrayList<>();
+
+		numbers.add(1);
+		numbers.add(-2);
+
+		assertEquals(true, checkNegatives(numbers));
 	}
-	
-	// Test Sum Delimiter /n
-	public void testSumWithDelimiter() {
-		
+
+	@Test // Test Sum With ,
+	public static void testSumWithVirg() {
+		String numberVirg = "1, 2";
+
+		boolean equals = (add(convertNumbers(numberVirg)) == 3) ? true : false;
+
+		assertEquals(true, equals);
 	}
-	
-	// Test Sum With Space
-	public void testSumWithSpace() {
-		
-	}
-	
-	// Test Sum With ,
-	public void testSumWithVirg() {
-		
-	}
-	
+
 	public static void main(String[] args) {
-		
 		System.out.println("Digite os números:");
 
 		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
-		
+
 		String numbers = in.nextLine();
-		
-		
-		
+
+		ArrayList<Integer> numbersConverted = convertNumbers(numbers);
+
+		if (checkNegatives(numbersConverted)) {
+			getNegatives(numbersConverted);
+		} else {
+			System.out.println(add(numbersConverted));
+		}
+
+		testSumNumber();
+		testSumNegatives();
+		testSumWithVirg();
 	}
 
 }
